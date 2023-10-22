@@ -12,7 +12,7 @@
 
 #ifdef CONFIG_BLINK_LED_STRIP
 
-void set_led_val(led_strip_handle_t led_strip, bool s_led_state)
+void blink_led(led_strip_handle_t led_strip, bool s_led_state)
 {
     ESP_LOGI(TAG, "Turning the LED %s!", s_led_state == true ? "ON" : "OFF");
     /* If the addressable LED is enabled */
@@ -56,7 +56,7 @@ void configure_led(led_strip_handle_t led_strip)
 
 #elif CONFIG_BLINK_LED_GPIO
 
-void set_led_val(bool s_led_state)
+void blink_led(bool s_led_state)
 {
     ESP_LOGI(TAG, "Turning the LED %s!", s_led_state == true ? "ON" : "OFF");
     /* Set the GPIO level according to the state (LOW or HIGH)*/
