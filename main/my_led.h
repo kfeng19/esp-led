@@ -1,3 +1,6 @@
 #include <stdbool.h>
-void blink_led(bool);
-void configure_led();
+#include "led_strip.h"
+// Turn the LED on or off depending on the input bool
+void set_led_val(led_strip_handle_t, bool);
+// Configure a LED strip
+void configure_led(led_strip_handle_t);

@@ -14,17 +14,19 @@
 #include "my_led.h"
 #include "var.h"
 #include "stdbool.h"
+#include "led_strip.h"
 
-static bool s_led_state = false;
+bool s_led_state = false;
+led_strip_handle_t my_led;
 
 void app_main(void)
 {
 
     /* Configure the peripheral according to the LED type */
-    configure_led();
+    configure_led(my_led);
 
     while (1) {
-        blink_led(s_led_state);
+        set_led_val(my_led, s_led_state);
         /* Toggle the LED state */
         s_led_state = !s_led_state;
         vTaskDelay(CONFIG_BLINK_PERIOD / portTICK_PERIOD_MS);
