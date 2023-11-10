@@ -26,7 +26,7 @@ void app_main(void)
     configure_led(&my_led);
 
     while (1) {
-        blink_led(my_led, s_led_state);
+        blink_led(&my_led, s_led_state);
         /* Toggle the LED state */
         s_led_state = !s_led_state;
         vTaskDelay(CONFIG_BLINK_PERIOD / portTICK_PERIOD_MS);
