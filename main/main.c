@@ -23,7 +23,7 @@ void app_main(void)
 {
 
     /* Configure the peripheral according to the LED type */
-    configure_led(my_led);
+    configure_led(&my_led);
 
     while (1) {
         blink_led(my_led, s_led_state);
