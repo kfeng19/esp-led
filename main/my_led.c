@@ -10,7 +10,61 @@
 */
 #define BLINK_GPIO CONFIG_BLINK_GPIO
 
+
+/*
+   Return a RGB colour value given a scalar v in the range [vmin,vmax]
+   In this case each colour component ranges from 0 (no contribution) to
+   1 (fully saturated), modifications for other ranges is trivial.
+   The colour is clipped at the end of the scales if v is outside
+   the range [vmin,vmax]
+   https://paulbourke.net/miscellaneous/colourspace/
+   https://stackoverflow.com/questions/7706339/grayscale-to-red-green-blue-matlab-jet-color-scale
+*/
+
+typedef struct {
+    double r,g,b;
+} color_t;
+
+color_t GetColour(double v,double vmin,double vmax)
+{
+   color_t c = {1.0,1.0,1.0}; // white
+   double dv;
+
+   if (v < vmin)
+      v = vmin;
+   if (v > vmax)
+      v = vmax;
+   dv = vmax - vmin;
+
+   if (v < (vmin + 0.25 * dv)) {
+      c.r = 0;
+      c.g = 4 * (v - vmin) / dv;
+   } else if (v < (vmin + 0.5 * dv)) {
+      c.r = 0;
+      c.b = 1 + 4 * (vmin + 0.25 * dv - v) / dv;
+   } else if (v < (vmin + 0.75 * dv)) {
+      c.r = 4 * (v - vmin - 0.5 * dv) / dv;
+      c.b = 0;
+   } else {
+      c.g = 1 + 4 * (vmin + 0.75 * dv - v) / dv;
+      c.b = 0;
+   }
+
+   return(c);
+}
+
 #ifdef CONFIG_BLINK_LED_STRIP
+
+
+void inv_jet(led_strip_handle_t *led_strip, double level, double min, double max, double scale){
+    if (scale < 0 || scale > 1) ESP_LOGE(TAG, "Scale must be between 0 and 1");
+    color_t color = GetColour(level, min, max);
+    int r = color.r * 255 * scale;
+    int g = color.g * 255 * scale;
+    int b = color.b * 255 * scale;
+    led_strip_set_pixel(*led_strip, 0, b, g, r); // Flip r and b
+    led_strip_refresh(*led_strip);
+}
 
 void blink_led(led_strip_handle_t *led_strip, bool s_led_state)
 {
